@@ -1,0 +1,58 @@
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "startup|resume|clear",
+        "hooks": [
+          {
+            "name": "constellation-session-start",
+            "type": "command",
+            "command": "node $EXTENSION_DIR/hooks/inject-prompt.js session-start SessionStart",
+            "description": "Injects Constellation context into new sessions",
+            "statusMessage": "Loading Constellation context..."
+          }
+        ]
+      }
+    ],
+    "SubagentStart": [
+      {
+        "matcher": ".*",
+        "hooks": [
+          {
+            "name": "constellation-subagent-start",
+            "type": "command",
+            "command": "node $EXTENSION_DIR/hooks/inject-prompt.js subagent-start SubagentStart",
+            "description": "Injects Constellation context into subagents",
+            "statusMessage": "Injecting Constellation context into subagent..."
+          }
+        ]
+      }
+    ],
+    "BeforeTool": [
+      {
+        "matcher": "grep_search|glob",
+        "hooks": [
+          {
+            "name": "constellation-pre-tool-use",
+            "type": "command",
+            "command": "node $EXTENSION_DIR/hooks/inject-prompt.js pre-tool-use-grep-glob BeforeTool",
+            "description": "Reminds agent to prefer code_intel over Grep/Glob for structural queries"
+          }
+        ]
+      }
+    ],
+    "PreCompact": [
+      {
+        "hooks": [
+          {
+            "name": "constellation-pre-compact",
+            "type": "command",
+            "command": "node $EXTENSION_DIR/hooks/inject-prompt.js pre-compact PreCompact",
+            "description": "Preserves Constellation context during context compaction",
+            "statusMessage": "Preserving Constellation context..."
+          }
+        ]
+      }
+    ]
+  }
+}

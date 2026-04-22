@@ -1,0 +1,42 @@
+description = "Quick health check for Constellation connectivity and authentication"
+
+prompt = """
+Run a quick Constellation health check by calling `mcp_constellation_code_intel` with `getArchitectureOverview({ includeMetrics: true })`.
+
+**Interpret the response and report:**
+
+### If the tool call FAILS ENTIRELY (timeout, connection error, MCP not found):
+Report:
+- MCP Server: UNREACHABLE
+- API Auth: -
+- Quick Fixes: Restart Gemini CLI, verify npm `@constellationdev/mcp@latest`, or check manifest.
+
+### If `result.success` is true:
+Report:
+- MCP Server: OK
+- API Auth: OK
+- Project: <projectName>
+- Index: <totalFiles> files, <totalSymbols> symbols
+- Status: All systems operational.
+
+### If `result.success` is false, check `result.error.code`:
+
+**AUTH_ERROR:**
+- MCP Server: OK
+- API Auth: FAILED
+- Issue: Authentication failed - API key missing or invalid.
+- Quick Fix: Run `constellation auth` to configure credentials.
+
+**PROJECT_NOT_INDEXED:**
+- MCP Server: OK
+- API Auth: OK
+- Project: Not indexed
+- Issue: This project hasn't been indexed yet.
+- Quick Fix: Run `constellation index --full` in your project directory.
+
+**API_UNREACHABLE:**
+- MCP Server: OK
+- API Auth: UNREACHABLE
+- Issue: Cannot reach the Constellation API server.
+- Quick Fixes: Check network, verify API URL.
+"""

@@ -1,0 +1,26 @@
+description = "Get a high-level overview of the codebase architecture"
+
+prompt = """
+Retrieve a high-level architectural overview of the codebase using `mcp_constellation_code_intel` with `getArchitectureOverview({ includeMetrics: true, includeModuleGraph: false })`.
+
+**Present the following:**
+
+1. **Project Summary**
+   - Project name
+   - Total files and total symbols
+   - Supported languages
+
+2. **Language Distribution**
+   - For each language in result.data.metrics.byLanguage, show name, file count, symbol count, and percentage of codebase.
+
+3. **Symbol Breakdown**
+   - Top 10 symbol kinds from result.data.metrics.byKind (functions, classes, interfaces, etc.) with counts.
+
+4. **Key Directories**
+   - Top 10 directories by symbol count from result.data.structure (these represent the main modules/areas of the codebase).
+
+5. **Observations** (optional insights):
+   - Note if it's heavily function-based vs class-based, multi-language codebase characteristics, and relative size of different areas.
+
+Keep the output concise and scannable. Focus on giving a quick mental model of the codebase structure.
+"""

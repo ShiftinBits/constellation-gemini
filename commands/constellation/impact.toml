@@ -1,0 +1,18 @@
+description = "Analyze the impact of changing a symbol or file"
+
+prompt = """
+Analyze the impact of changing the specified symbol: {{args}}.
+
+**If no symbol name is provided**, ask the user what symbol they want to analyze.
+
+Use `mcp_constellation_code_intel` with `impactAnalysis({ symbolName: "{{args}}", depth: 3 })`.
+
+**If successful**, present:
+1. **Symbol**: Name, kind (function/class/etc), and location.
+2. **Risk Assessment**: Risk level (low/medium/high/critical), score, and total scope of impact (files/symbols affected).
+3. **Key Dependents**: Top 10 files that directly depend on this symbol.
+4. **Test Coverage**: Percentage of affected code with tests.
+5. **Recommendations**: Specific steps to safely proceed.
+
+**If high or critical risk**, emphasize caution and suggest reviewing dependents before making changes.
+"""

@@ -1,0 +1,22 @@
+{
+  "name": "constellation-gemini",
+  "version": "1.0.0",
+  "description": "Constellation Extension for Gemini CLI",
+  "author": {
+    "name": "ShiftinBits Inc"
+  },
+  "license": "AGPL-3.0",
+  "homepage": "https://docs.constellationdev.io/plugins/gemini",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "gemini-extension",
+    "mcp",
+    "constellation",
+    "code-intelligence",
+    "code-analysis",
+    "dependency-analysis",
+    "impact-analysis"
+  ]
+}
