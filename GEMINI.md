@@ -26,7 +26,7 @@ constellation-gemini/
 │   └── constellation-troubleshooting/ Troubleshooting guide
 │
 ├── hooks/
-│   ├── hooks.json            4 hooks (SessionStart, SubagentStart, BeforeTool, PreCompact)
+│   ├── hooks.json            3 hooks (SessionStart, BeforeTool, PreCompress)
 │   └── prompts/              Prompt templates for hooks
 │
 └── README.md                 User-facing documentation
