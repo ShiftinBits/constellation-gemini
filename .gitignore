@@ -1,0 +1,26 @@
+# AI Agent Local Files
+*.local.md
+*.local.json
+*.local.toml
+
+# Claude Code Files
+.claude/settings.local.json
+.claude/plans
+.claude/worktrees
+
+# Superpowers AI Plugin
+.superpowers/
+docs/superpowers
+
+# General AI Plans
+docs/plans
+
+# Temporary Folders
+tmp/
+temp/
+
+# Git worktrees
+.worktrees/
+
+# Node
+node_modules/
