@@ -64,10 +64,9 @@ Check error.code:
    npx @constellationdev/cli auth
    ```
 
-2. **Check if key is set:**
-   ```bash
-   echo $CONSTELLATION_ACCESS_KEY
-   ```
+2. **Check if access key is properly set:**
+
+   In the event of `AUTH_ERROR` failures the MCP server provides details in the `error.guidance[0]` value of the response object, indicating the current state of the `CONSTELLATION_ACCESS_KEY` environment variable.
 
 3. **If key is expired:** Regenerate in Constellation web UI under Settings > API Keys.
 
