@@ -8,8 +8,7 @@ While Constellation's MCP server provides raw code intelligence capabilities, th
 |---------|---------|
 | **Slash Commands** | Quick access to common workflows |
 | **Contextual Skills** | Gemini automatically loads relevant knowledge when needed |
-| **Sub-agents** | Autonomous specialists for code navigation and analysis |
-| **Agent Skills** | Procedural guidance for troubleshooting and complex workflows |
+| **Session Hooks** | Transparent steering toward `code_intel` for structural code queries |
 
 ## Features
 
@@ -33,32 +32,18 @@ Gemini automatically activates specialized knowledge based on your questions:
 | Skill | Triggers When You Ask About... |
 |-------|-------------------------------|
 | **constellation-troubleshooting** | Error codes, connectivity issues, debugging problems |
-
-### Agents
-
-Specialized AI agents for autonomous analysis:
-
-| Agent | Purpose |
-|-------|---------|
-| **source-scout** | Explores and navigates codebase, discovers symbols and architectural patterns |
-| **impact-investigator** | Proactively assesses risk before refactoring, renaming, or deleting code |
-| **dependency-detective** | Detects circular dependencies and unhealthy coupling patterns |
-
-**Example Trigger:**
-```
-You: "Rename AuthService to AuthenticationService"
-Gemini: "Before renaming, let me analyze the potential impact..."
-[Launches impact-investigator agent]
-```
+| **impact-analysis** | "Impact of changing X", "what would break if I modify X", "blast radius", "risk of renaming X", "safe to delete X" |
 
 ### Hooks
 
-Event hooks enable intelligent, transparent assistance:
+Event hooks transparently steer Gemini toward `code_intel` for structural code questions. All hooks are gated on `CONSTELLATION_ACCESS_KEY` being set (prefix `ak:`) and emit context only — they never block execution:
 
-| Hook | Event | Behavior |
-|------|-------|----------|
-| **Availability Check** | `SessionStart` | Silently checks Constellation connectivity at session start |
-| **Context Preservation** | `PreCompact` | Preserve any Constellation insights in compacted summary |
+| Hook | Event | Matcher | Behavior |
+|------|-------|---------|----------|
+| **Session Context** | `SessionStart` | `.*` | Establishes `code_intel` as the primary tool for code understanding when a session starts |
+| **Sub-agent Context** | `BeforeAgent` | `.*` | Injects the same awareness into spawned sub-agents (built-ins don't inherit `GEMINI.md`) |
+| **Tool Steering** | `BeforeTool` | `grep_search\|glob` | Reminds Gemini to prefer `code_intel` for structural queries before falling back to text search |
+| **Shell Steering** | `BeforeTool` | `run_shell_command` | Inspects `tool_input.command` and emits the same reminder when `grep`, `rg`, `glob`, `awk`, or `findstr` appears |
 
 ## Installation
 

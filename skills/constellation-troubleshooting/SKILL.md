@@ -5,94 +5,77 @@ description: This skill should be used when the user asks about "Constellation e
 
 # Constellation Troubleshooting
 
-Quick diagnostic procedures for Constellation extension issues.
+Diagnose Constellation plugin failures. If unavailable, continue with local search/read and clearly note degraded mode.
 
-## Quick Diagnosis Flowchart
+## Triage Order
 
-```
-Issue Reported
-     |
-     v
-Can mcp_constellation_code_intel be called?
-     |                    |
-    YES                   NO
-     |                    |
-     v                    v
-  API Error          MCP Server Issue
- (has code)         (see MCP Diagnosis)
-     |
-     v
-Check error.code:
-- AUTH_ERROR --> Authentication section
-- PROJECT_NOT_INDEXED --> Indexing section
-- SYMBOL_NOT_FOUND --> Query Issues section
-- API_UNREACHABLE --> Connectivity section
-```
+1. If `code_intel` cannot be called, treat as MCP startup/config issue.
+2. If a response includes `error.code`, branch by code:
+   `AUTH_ERROR`, `PROJECT_NOT_INDEXED`, `SYMBOL_NOT_FOUND`, `FILE_NOT_FOUND`, `API_UNREACHABLE`.
+3. If status is unclear, run `/constellation:status` then `/constellation-diagnose`.
 
 ## MCP Server Issues
 
-**Symptom:** "Failed to reconnect to plugin:constellation:constellation" or tool calls fail entirely.
+Symptom: connection failures or missing `code_intel`.
 
-**Cause:** The MCP server isn't starting or is crashing.
-
-**Quick Fixes:**
-
-1. **Restart Gemini CLI** - MCP connections initialize at startup.
-
-2. **Verify gemini-extension.json configuration:**
-
-   ```json
-   {
-     "mcpServers": {
-       "constellation": {
-         "type": "stdio",
-         "command": "npx",
-         "args": ["-y", "@constellationdev/mcp@latest"]
-       }
-     }
-   }
-   ```
-
+1. Restart Gemini.
+2. Verify MCP binary:
+```bash
+npx -y @constellationdev/mcp@latest --version
+```
+3. Verify MCP config points to `npx -y @constellationdev/mcp@latest` and passes `CONSTELLATION_ACCESS_KEY`.
+   
 ## Authentication Issues (AUTH_ERROR)
 
-**Symptom:** "Authentication failed" or "Invalid API key"
+Symptom: invalid credentials.
 
-**Quick Fixes:**
-
-1. **Configure credentials:**
-   ```bash
-   npx @constellationdev/cli auth
-   ```
-
-2. **Check if access key is properly set:**
-
-   In the event of `AUTH_ERROR` failures the MCP server provides details in the `error.guidance[0]` value of the response object, indicating the current state of the `CONSTELLATION_ACCESS_KEY` environment variable.
-
-3. **If key is expired:** Regenerate in Constellation web UI under Settings > API Keys.
+1. Configure credentials:
+```bash
+npx @constellationdev/cli auth
+```
+2. Read `error.guidance[0]` for key-state details.
+3. Regenerate expired/revoked keys in Constellation UI.
 
 ## Indexing Issues (PROJECT_NOT_INDEXED)
 
-**Symptom:** "Project not indexed" or empty results
+Symptom: index missing/stale.
 
-**Quick Fixes:**
-
-1. **Index the project:**
-   ```bash
-   cd /path/to/your/project
-   constellation index --full
-   ```
-
-2. **Force reindex if stale:**
-   ```bash
-   constellation index --full --force
-   ```
+1. Index:
+```bash
+constellation index --full
+```
+2. Force reindex:
+```bash
+constellation index --full --force
+```
 
 ## Connectivity Issues (API_UNREACHABLE)
 
-**Symptom:** Timeout or connection refused
+Symptom: timeout or refusal.
 
-**Quick Fixes:** Check network connectivity and verify the API URL in `constellation.json`.
+1. Check local network/DNS.
+2. Check status page: `https://status.constellationdev.io/`
+3. Verify API URL in `constellation.json`.
 
-## Error Codes Reference
+## Query Issues (SYMBOL_NOT_FOUND, FILE_NOT_FOUND)
 
-For a complete list of error codes, refer to `./references/error-codes.md`.
+Usually not fatal; item is absent from index/query scope.
+
+1. Broaden search terms.
+2. Check spelling/case/path.
+3. Confirm language/extension is indexed.
+4. Reindex if files were added recently.
+
+When blocked, continue task with local tools and state degraded mode.
+
+## Error Code Quick Reference
+
+| Code | Cause | Fix |
+|------|-------|-----|
+| `AUTH_ERROR` | Missing/invalid/expired API key | `constellation auth` |
+| `PROJECT_NOT_INDEXED` | Project needs indexing | `constellation index --full` |
+| `SYMBOL_NOT_FOUND` | Typo or stale index | Broader search or re-index |
+| `FILE_NOT_FOUND` | Path mismatch or stale index | Verify path; re-index |
+| `API_UNREACHABLE` | API not running / network issue | Check network, status page, API URL |
+
+See `references/error-codes.md` for the complete error code reference.

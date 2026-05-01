@@ -1,15 +1,26 @@
 {
+  "description": "Constellation code intelligence hooks inject code_intel awareness into sessions, subagents, and tool selection",
   "hooks": {
     "SessionStart": [
       {
-        "matcher": "startup|resume|clear",
+        "matcher": ".*",
         "hooks": [
           {
-            "name": "constellation-session-start",
             "type": "command",
-            "command": "node ${extensionPath}/hooks/inject-prompt.js session-start SessionStart",
-            "description": "Injects Constellation context into new sessions",
-            "statusMessage": "Loading Constellation context..."
+            "command": "node ${extensionPath}/hooks/inject.js SessionStart",
+						"description": "Inject code_intel awareness at the start of the session"
+          }
+        ]
+      }
+    ],
+    "BeforeAgent": [
+      {
+        "matcher": ".*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node ${extensionPath}/hooks/inject.js BeforeAgent",
+						"description": "Inject code_intel awareness before agent execution"
           }
         ]
       }
@@ -19,23 +30,19 @@
         "matcher": "grep_search|glob",
         "hooks": [
           {
-            "name": "constellation-pre-tool-use",
             "type": "command",
-            "command": "node ${extensionPath}/hooks/inject-prompt.js pre-tool-use-grep-glob BeforeTool",
-            "description": "Reminds agent to prefer code_intel over Grep/Glob for structural queries"
+            "command": "node ${extensionPath}/hooks/inject.js BeforeTool",
+						"description": "Steer model toward using code_intel tool for code search or navigation tasks"
           }
         ]
-      }
-    ],
-    "PreCompress": [
+      },
       {
+        "matcher": "run_shell_command",
         "hooks": [
           {
-            "name": "constellation-pre-compact",
             "type": "command",
-            "command": "node ${extensionPath}/hooks/inject-prompt.js pre-compact PreCompact",
-            "description": "Preserves Constellation context during context compaction",
-            "statusMessage": "Preserving Constellation context..."
+            "command": "node ${extensionPath}/hooks/shell.js",
+						"description": "Steer model toward using code_intel tool for code search or navigation tasks"
           }
         ]
       }

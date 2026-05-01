@@ -1,7 +1,7 @@
 {
   "name": "constellation-gemini",
-  "version": "1.0.0",
-  "description": "Constellation Extension for Gemini CLI",
+  "version": "1.2.0",
+  "description": "Upgrade Gemini from text search to code understanding.",
   "author": {
     "name": "ShiftinBits Inc"
   },
